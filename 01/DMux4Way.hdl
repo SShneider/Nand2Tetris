@@ -1,0 +1,43 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/DMux4Way.hdl
+
+/**
+ * 4-way demultiplexor:
+ * {a, b, c, d} = {in, 0, 0, 0} if sel == 00
+ *                {0, in, 0, 0} if sel == 01
+ *                {0, 0, in, 0} if sel == 10
+ *                {0, 0, 0, in} if sel == 11
+ */
+
+CHIP DMux4Way {
+    IN in, sel[2];
+    OUT a, b, c, d;
+
+    PARTS:
+    // Put your code here:
+//A check
+	Or(a = sel[0], b = sel[1], out = ACheck);
+//A is the only one where both selectors are False
+	Not(in = ACheck, out = NotACheck);
+//Or will return false if a= in
+	And(a = in, b = NotACheck, out = a);
+//And will return 1 only if in = 1 and sel = 00
+//if in = 0, it doesnt matter
+//D check
+	And(a = sel[0], b = sel[1], out = Dcheck);
+//D is the only output where both sels are true
+//And will return true if d = in
+	And(a = in, b = Dcheck, out = d);
+//B check
+	Not(in = sel[1], out = notSelOne);
+	And(a = sel[0], b = notSelOne, out = BCheck);
+//will true if B = in
+	And(a = in, b = BCheck, out = b);
+//C check
+	Not(in = sel[0], out = notSelZero);
+	And(a = sel[1], b = notSelZero, out = CCheck);
+//will true if C = in
+	And(a = in, b = CCheck, out = c);
+}
